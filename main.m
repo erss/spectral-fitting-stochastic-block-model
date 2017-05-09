@@ -45,7 +45,7 @@ clear all;
 % 1) Define parameters.
 
 K       = 3;     %number of communities
-n       = 1000;  % number of nodes
+n       = 100;  % number of nodes
 p_in    = 1;     % probability of node connecting to node inside its community
 p_out   = 1/8;   % probability of node connecting outside its community
 alpha_n = 1/n;   % global scaling parameter
@@ -91,11 +91,12 @@ clear all;
 
 % 1) Define parameters.
 K       = 4;    % number of communities
-n       = 1000; % number of nodes
+n       = 500; % number of nodes
 p_in    = 1;    % probability of node connecting to node inside its community
+                   % ... this is 1 for identifiability.
 p_out   = 1/8;  % probability of node connecting outside its community
 alpha_n = 1/n;  % global scaling parameter
-
+pi_p = 0.8;     % probability of generating pure nodes 
 % 2) Simulate network.
 overlapping_continuous_sbm_simulation;
 
@@ -104,15 +105,16 @@ continuous_sbm_spectral_fit;
 
 % 4) Plot true network.
 figure;
+subplot(1,2,1)
 plot_labeled_network(A);
-h = suptitle('Continuous Assignment SBM');
-set(h,'FontSize',20,'FontWeight','normal')
+h = title('Continuous Assignment SBM');
+set(h,'FontSize',15,'FontWeight','normal')
 
 % 5) Plot nodes in eigenspace colored by discrete community assignment.
-figure;
+subplot(1,2,2)
 scatter3(X(:,1),X(:,2),X(:,3),150,idx,'filled')
 xlabel('First eigenvector')
 ylabel('Second eigenvector')
 zlabel('Third eigenvector')
-title('Nodes represented in eigenspace and colored by discrete community assignment')
+title('Nodes represented in eigenspace','FontSize',15)
 

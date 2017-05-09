@@ -1,9 +1,9 @@
 %%%% SPECTRAL FITTING ALGORITHM
 %%% Computes basic fitting prodedure on graph Laplacian, L, or on adjacency
-%%% matrix, A. If L, then clusters K eigenvectors corresponding to the
-%%% smallest eigenvalues.  If D, then clusters K eigenvectors corresponding
-%%% to largest eigenvalues. K is the number of communities.
-
+%%% matrix, A. If the parameter `laplacian' is TRUE, then clusters K 
+%%% eigenvectors corresponding to the smallest eigenvalues of L.  If the 
+%%% parameter `laplacian' is FALSE, then clusters K eigenvectors 
+%%% corresponding to largest eigenvalues of A. K is the number of communities.
 
 % 1) Diagonalize A or Diagonalize Laplacian
 
