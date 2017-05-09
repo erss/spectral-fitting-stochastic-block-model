@@ -1,8 +1,11 @@
-%%%% degree_correct_spectral_fit
+%%%% DEGREE CORRECTED SPECTRAL FITTING ALGORITHM
+%%% Algorithm developed from: 'Regularized Spectral Clustering Under the
+%%% Degree-Corrected Stochastic Blockmodel' Qin and Rohe (2013).
 
-% 1) Find graph Laplacian
-D = sum(A,2); % expected node degrees
-tau = mean(D);
+% 1) Compute regularized graph Laplacian
+
+D = sum(A,2);  % expected node degrees
+tau = mean(D); % mean node degree
 D = diag(D);
 D = D+tau*eye(size(D)); % regularize
 
@@ -11,32 +14,24 @@ L = inv(sqrt(D))*A*inv(sqrt(D)); % graph Laplacian
 % 2) Diagonalize Laplacian
 
 [Evecs,Evals] = eig(L);
+X = Evecs(:,end-K+1:end); % take K leading eigenvectors
 
-X = Evecs(:,end-K+1:end); % take K largest eigenvectors, corresponding to largest evals
-
-% 3) Normalize X;
+% 3) Project X onto unit sphere;
 
 norm = sum(X.^2,2).^.5;
 norm = repmat(norm,1,K);
-Xhat = X./norm;
+X = X./norm;
 
-% 4) Cluster
+% 4) Cluster using K means.
 
-idx = kmeans(Xhat,K);
-% 
-% Z = linkage(Xhat,'median');
-% c = cluster(Z,'maxclust',6);
-% scatter3(X(:,1),X(:,2),X(:,3),10,c)
+idx = kmeans(X,K);
 
-%Zhat = Xhat*inv(S);
-
+% 5) Graph matching: permute Zhat to most closely match Z
 Zhat = zeros(n,K);
 for t = 1:n
     
     Zhat(t,idx(t)) = 1;
 end
-
-% 5) Permute Zhat to most closely match Z
 
 permutations = perms([1:K]);
 

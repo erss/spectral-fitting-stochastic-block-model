@@ -1,37 +1,35 @@
-%%%% paper fitting algorithm
-
-% 1) diagonalize A
-[U,L] = eig(A);
-
-Xhat = real(U*sqrtm(L)); % first step to get estimated node positions
-
-% 2) normalize and regularize rows of Xhat
-% regularization parameter
-alpha_n = sum(A(:))/(n*(n-1)*K);
-tau = 0.1*(alpha_n^0.2*K^1.5)/(n^0.3);
-
-norm = sum(Xhat.^2,2).^.5 + tau.*ones(n,1); % norm across columns
-norm = repmat(norm,1,n);
-Xhat = Xhat./norm;
-
-% 3) K means/ medians
+%%%% SPECTRAL FITTING ALGORITHM
+%%% Computes basic fitting prodedure on graph Laplacian, L, or on adjacency
+%%% matrix, A. If L, then clusters K eigenvectors corresponding to the
+%%% smallest eigenvalues.  If D, then clusters K eigenvectors corresponding
+%%% to largest eigenvalues. K is the number of communities.
 
 
-[idx, S]  = kmeans(Xhat,K); %,'Distance','cityblock');
+% 1) Diagonalize A or Diagonalize Laplacian
 
-% Zhatp = Xhat*inv(S);
-% [y i] = max(Zhatp,[],2);
-% Zfinal = zeros(n,K);
-% Zfinal(i) = 1;
+if laplacian % Diagonalize Laplacian if true
+ D = diag(sum(A,2));
+ L = D - A; 
+ [Evecs,Evals] = eig(L);
+ X = Evecs(:,1:K); % Take K eigenvectors corresponding to smallest eigenvalues
+else         % ... otherwise diagonalize A
+    [Evecs,Evals] = eig(A);
+    X = Evecs(:,end-K+1:end); % Take K eigenvectors corresponding to largest eigenvalues
+end
 
-Zhat = zeros(n,K);
-for t = 1:n
-    
+% 2) Cluster using K means.
+
+[idx, S]  = kmeans(X,K);
+
+% 3) Graph matching: permute Zhat to most closely match Z
+
+Zhat = zeros(n,K);  % Create community membership matrix based on clustering
+for t = 1:n    
     Zhat(t,idx(t)) = 1;
 end
-% 4) Permute Zhat to most closely match Z
 
-permutations = perms([1:K]);
+
+permutations = perms([1:K]); % Graph matching
 
 for i = 1:size(permutations,1)
     indices = permutations(i,:);

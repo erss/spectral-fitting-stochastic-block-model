@@ -12,6 +12,8 @@ p_out = 1/8;     % probability of node connecting outside its community
 sbm_simulation; 
 
 % 3) Fit network using simple spectral fitting procedure.
+laplacian = true; % TRUE indicates fitting on Laplacian 
+                  % FALSE indicates fitting on adjacency A.
 spectral_fit;
 
 % 4) Plot true and estimated networks.
@@ -78,7 +80,7 @@ disp(fraction_misclassified);
 
 % 6) Plot nodes in eigenspace colored by community assignment.
 figure;
-scatter3(Xhat(:,1),Xhat(:,2),Xhat(:,3),150,idx,'filled')
+scatter3(X(:,1),X(:,2),X(:,3),150,idx,'filled')
 xlabel('First eigenvector')
 ylabel('Second eigenvector')
 zlabel('Third eigenvector')
@@ -108,7 +110,7 @@ set(h,'FontSize',20,'FontWeight','normal')
 
 % 5) Plot nodes in eigenspace colored by discrete community assignment.
 figure;
-scatter3(Xhat(:,1),Xhat(:,2),Xhat(:,3),150,idx,'filled')
+scatter3(X(:,1),X(:,2),X(:,3),150,idx,'filled')
 xlabel('First eigenvector')
 ylabel('Second eigenvector')
 zlabel('Third eigenvector')
