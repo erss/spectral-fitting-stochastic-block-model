@@ -9,7 +9,6 @@ p_in  = 1/2;     % probability of node connecting to node inside its community
 p_out = 1/8;     % probability of node connecting outside its community
 
 % 2) Simulate network.
-
 sbm_simulation; 
 
 % 3) Fit network using simple spectral fitting procedure.

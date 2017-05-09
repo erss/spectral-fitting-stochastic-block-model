@@ -1,15 +1,16 @@
 function plot_labeled_network( A, Z )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+% Plots graph for given adjacency matrix A and given community assignment
+% matrix Z (optional).  Z is a binary matrix of size [number of nodes] x [number of
+% communities]. 
 
-if nargin ==1
+if nargin == 1  % default Z plots network as one community
     Z= ones(size(A,1),1);
 end
 
     G = graph(A);
     n = size(A,1);
     K = size(Z,2);
-    %%% Plot True Network
+   
     h = plot(G,'MarkerSize',15,'LineWidth',2);
     h.NodeLabel = {};
     axis square
